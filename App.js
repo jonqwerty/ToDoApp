@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native';
-import { AddTodo } from './src/AddTodo';
-import { Navbar } from './src/Navbar';
-import { Todo } from './src/Todo';
+import { Navbar } from './src/components/Navbar';
+import { MainScreen } from './src/screens/MainScreen';
+import { TodoScreen } from './src/screens/TodoScreen';
 
 export default function App() {
+  const [todoId, setTodoId] = useState(null)
   const [todos, setTodos] = useState([])
 
   const addTodo = (title) => {
@@ -25,27 +26,23 @@ export default function App() {
     }])
 
   }
+  let content = (<MainScreen todos={todos} addTodo={addTodo} 
+    removeTodo={removeTodo} openTodo={(id) => {setTodoId(id)}}  />)
 
   const removeTodo = id => {
     setTodos(prev => prev.filter(todo => todo.id !== id))
   }
+
+  if (todoId) {
+    const selectedTodo = todos.find(todo => todo.id ===todoId)
+    content = <TodoScreen goBack={() => setTodoId(null)} todo={selectedTodo} /> 
+  }
+
   return (
     <View >
       <Navbar title="ToDo App" />
       <View style={styles.container}>
-        <AddTodo onSubmit={addTodo} />
-
-        <FlatList
-        keyExtractor={item => item.id.toString()}
-        data={todos}
-        renderItem={({item}) => <Todo todo={item} onRemove = {removeTodo} />}
-        />
-
-        {/* <ScrollView>
-          { todos.map(todo => {
-            return <Todo todo={todo} key={todo.id} />
-          }) }
-        </ScrollView> */}
+        { content }
       </View>
     </View>
   );

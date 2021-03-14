@@ -2,6 +2,8 @@ import React from 'react'
 import {Text, View, StyleSheet} from 'react-native'
 
 export const Todo = ({todo}) => {
+    
+
     return (
 
         <View style={styles.todo}>

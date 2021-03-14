@@ -1,15 +1,29 @@
-import React from 'react'
-import {View, StyleSheet, TextInput, Button} from 'react-native'
+import React, {useState} from 'react'
+import {View, StyleSheet, TextInput, Button, Alert} from 'react-native'
 
 export const AddTodo = ({onSubmit}) => {
+    const [value, setValue] = useState('')
 
     const pressHandler = () => {
-        onSubmit('test todo')
+        if (value.trim()) {
+            onSubmit(value)
+            setValue('')
+        } else {
+            Alert.alert('Назва справи не може бути пустою')
+        }
+        
     }
 
     return  (
         <View style={styles.block}>
-            <TextInput style={styles.input} />
+            <TextInput 
+            style={styles.input}
+            onChangeText={text => setValue(text)}
+            value={value}
+            placeholder="Введіть назву справи ..."
+            autoCorrect={false}
+            autoCapitalize="none"
+             />
             <Button title="Додати" onPress={pressHandler} />
 
         </View>

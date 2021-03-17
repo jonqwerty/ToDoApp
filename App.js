@@ -9,16 +9,7 @@ export default function App() {
   const [todos, setTodos] = useState([])
 
   const addTodo = (title) => {
-
-  //   const newTodo = {
-  //     id: Date.now().toString(),
-  //     title: title
-  //   }
-    // setTodos((prevTodos) => {
-    //   return [
-    //     ...prevTodos, newTodo
-    //   ]
-    // })
+ 
 
     setTodos(prev => [...prev, {
       id: Date.now().toString(),

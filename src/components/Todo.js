@@ -8,7 +8,7 @@ export const Todo = ({todo, onRemove, onOpen}) => {
     
 
     return (
-        <TouchableOpacity 
+        <TouchableOpacity  
         activeOpacity={0.5} 
         onPress={() => onOpen(todo.id)}
         onLongPress={longPressHandler}

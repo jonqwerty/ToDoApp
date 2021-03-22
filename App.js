@@ -10,15 +10,12 @@ export default function App() {
 
   const addTodo = (title) => {
  
-
     setTodos(prev => [...prev, {
       id: Date.now().toString(),
       title : title
     }])
 
   }
-  let content = (<MainScreen todos={todos} addTodo={addTodo} 
-    removeTodo={removeTodo} openTodo={(id) => {setTodoId(id)}}  />)
 
   const removeTodo = id => {
     const todo = todos.find(t => t.id === id)
@@ -43,6 +40,20 @@ export default function App() {
 
     )
   }
+  
+  const updateTodo = (id, title) => {
+    setTodos(old => old.map(todo => {
+      if (todo.id === id) {
+        todo.title = title
+      }
+      return todo
+    }))
+  }
+
+  let content = (<MainScreen todos={todos} addTodo={addTodo} 
+    removeTodo={removeTodo} openTodo={(id) => {setTodoId(id)}}  />)
+
+  
 
   if (todoId) {
     const selectedTodo = todos.find(todo => todo.id ===todoId)
@@ -50,7 +61,9 @@ export default function App() {
     <TodoScreen 
     onRemove={removeTodo} 
     goBack={() => setTodoId(null)} 
-    todo={selectedTodo} /> 
+    todo={selectedTodo}
+    onSave={updateTodo}
+    /> 
   }
 
   return (

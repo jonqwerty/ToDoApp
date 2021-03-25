@@ -3,10 +3,9 @@ import { StyleSheet, View, ScrollView, FlatList, Alert } from 'react-native'
 import * as Font from 'expo-font'
 import AppLoading from 'expo-app-loading'
 
-import { Navbar } from './src/components/Navbar'
-import { MainScreen } from './src/screens/MainScreen'
-import { TodoScreen } from './src/screens/TodoScreen'
-import { THEME } from './src/theme'
+import {TodoState} from './src/context/todo/TodoState'
+import { MainLayout } from './src/MainLayout'
+
 
 
 async function loadApplication() {
@@ -19,8 +18,7 @@ async function loadApplication() {
 
 export default function App() {
   const [isReady, setIsReady] = useState(false)
-  const [todoId, setTodoId] = useState(null)
-  const [todos, setTodos] = useState([])
+  
 
   if (!isReady) {
     return <AppLoading  
@@ -31,78 +29,14 @@ export default function App() {
   }
 
 
-  const addTodo = (title) => {
- 
-    setTodos(prev => [...prev, {
-      id: Date.now().toString(),
-      title : title
-    }])
-
-  }
-
-  const removeTodo = id => {
-    const todo = todos.find(t => t.id === id)
-    Alert.alert(
-      "Видалення елемента",
-      `Ви впевнені що хочете видалити "${todo.title}"?`,
-      [
-        
-        {
-          text: "Відмінити",
-          //onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "Видалити",
-          style: "destructive" ,
-          onPress: () => {
-            setTodoId(null)
-          setTodos(prev => prev.filter(todo => todo.id !== id))
-        } }
-      ],
-      {cancelable: false},
-
-    )
-  }
   
-  const updateTodo = (id, title) => {
-    setTodos(old => old.map(todo => {
-      if (todo.id === id) {
-        todo.title = title
-      }
-      return todo
-    }))
-  }
-
-  let content = (<MainScreen todos={todos} addTodo={addTodo} 
-    removeTodo={removeTodo} openTodo={(id) => {setTodoId(id)}}  />)
-
-  
-
-  if (todoId) {
-    const selectedTodo = todos.find(todo => todo.id ===todoId)
-    content = 
-    <TodoScreen 
-    onRemove={removeTodo} 
-    goBack={() => setTodoId(null)} 
-    todo={selectedTodo}
-    onSave={updateTodo}
-    /> 
-  }
 
   return (
-    <View >
-      <Navbar title="ToDo App" />
-      <View style={styles.container}>
-        { content }
-      </View>
-    </View>
-  );
+    <TodoState>
+       <MainLayout />
+    </TodoState>
+   
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: THEME.PADDING_HORIZONTAL,
-    paddingVertical: 30,
-    
-  }
-});
+

@@ -1,6 +1,7 @@
 import React, {useReducer} from 'react'  
 import {ScreenContext} from './screenContext'
 import {screenReduser} from './screenReduser'
+import {CHANGE_SCREEN} from '../types'
 
 
 export const ScreenState = ({children}) => {

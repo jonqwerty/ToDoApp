@@ -54,6 +54,7 @@ export const TodoState = ({ children }) => {
     }
 
     const fetchTodos = async () => {
+        showLoader()
         const response = await fetch('https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos.json', {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
@@ -62,6 +63,7 @@ export const TodoState = ({ children }) => {
         console.log('fetch data', data)
         const todos = Object.keys(data).map(key => ({...data[key], id: key}))
         dispatch({type: FETCH_TODOS, todos})
+        hideLoader()
     }
 
     const updateTodo = (id, title) => dispatch({ type: UPDATE_TODO, id, title })

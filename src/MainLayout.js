@@ -66,7 +66,7 @@ import { ScreenContext } from './context/screen/screenContext'
 
 
     return (
-      <View>
+      <View style={styles.wrapper}>
         <Navbar title="ToDo App" />
         <View style={styles.container}>
           { todoId ? <TodoScreen /> : <MainScreen />}
@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
     container: {
       paddingHorizontal: THEME.PADDING_HORIZONTAL,
       paddingVertical: 30,
-      
+      flex: 1
+    },
+    wrapper: {
+      flex: 1
     }
   });

@@ -1,10 +1,11 @@
 import React, {useReducer, useContext} from 'react'  
-import { ScreenContext } from '../screen/screenContext'
+import { ScreenContext, View } from '../screen/screenContext'
 import { ADD_TODO, HIDE_LOADER, REMOVE_TODO, SHOW_ERROR, SHOW_LOADER, UPDATE_TODO , CLEAR_ERROR, FETCH_TODOS} from '../types'
 import {Alert} from 'react-native'
 
 import {TodoContext} from './todoContext'
 import { todoReducer } from './todoReducer'
+import { Http } from '../../http'
 
 
 export const TodoState = ({ children }) => {
@@ -18,14 +19,17 @@ export const TodoState = ({ children }) => {
     const [state, dispatch] = useReducer(todoReducer, initialState)
 
     const addTodo = async title => {
-       const response = await fetch('https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos.json', {
-            method: "POST",
-            heders: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ title })
-        })
-        const data = await response.json()
-        console.log('id', data.name)
-        dispatch({type: ADD_TODO, title, id: data.name})
+        const response = await fetch('https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos.json', {
+             method: "POST",
+             heders: {'Content-Type': 'application/json'},
+             body: JSON.stringify({ title })
+         })
+         const data = await response.json()
+        
+            dispatch({type: ADD_TODO, title, id: data.name})
+        
+            
+       
     }
 
     const removeTodo = id => {
@@ -44,10 +48,8 @@ export const TodoState = ({ children }) => {
                   style: "destructive" ,
                onPress: async () => {
                 changeScreen(null)
-                await fetch(`https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos/${id}.json`, {
-                    method: 'DELETE',
-                    headers: {'Content-Type': 'application/json'}
-                })
+                await Http.delete(`https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos/${id}.json`)
+                
                 dispatch({ type: REMOVE_TODO, id})
              } }
                 ],
@@ -62,21 +64,20 @@ export const TodoState = ({ children }) => {
         clearError()
         try {
             const response = await fetch('https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos.json', {
+
             method: 'GET',
-            headers: {'Content-Type': 'application/json'}
+            headers: { 'Content-Type': 'application/json' }
+
             })
-             const data = await response.json()
-            // console.log('fetch data', data)
-             const todos = Object.keys(data).map(key => ({...data[key], id: key}))
+            const data = await response.json()
+            const todos = Object.keys(data).map(key => ({...data[key], id: key}))
             dispatch({type: FETCH_TODOS, todos})
-        } catch {
+        } catch (e) {
             showError('Щось пішло не так ...')
             console.log(e)
         } finally {
             hideLoader()
-        }
-        
-        
+        }     
     }
 
     const updateTodo = async (id, title) => {
@@ -84,9 +85,10 @@ export const TodoState = ({ children }) => {
         try {
             await fetch(`https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos/${id}.json`, {
                 method: 'PATCH',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({title})
             })
+            
             dispatch({ type: UPDATE_TODO, id, title })
         } catch (e) {
             showError('Щось пішло не так ...')
@@ -112,4 +114,4 @@ export const TodoState = ({ children }) => {
         updateTodo,
         fetchTodos
     }}>{ children }</TodoContext.Provider>
-}
+} 

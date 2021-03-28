@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
         color: THEME.DANGER_COLOR
     }
     
-})
+}) 

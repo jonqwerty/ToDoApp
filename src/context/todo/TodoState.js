@@ -1,11 +1,10 @@
 import React, {useReducer, useContext} from 'react'  
-import { ScreenContext, View } from '../screen/screenContext'
+import { ScreenContext } from '../screen/screenContext'
 import { ADD_TODO, HIDE_LOADER, REMOVE_TODO, SHOW_ERROR, SHOW_LOADER, UPDATE_TODO , CLEAR_ERROR, FETCH_TODOS} from '../types'
-import {Alert} from 'react-native'
+import {Alert, Text, View} from 'react-native'
 
 import {TodoContext} from './todoContext'
 import { todoReducer } from './todoReducer'
-import { Http } from '../../http'
 
 
 export const TodoState = ({ children }) => {
@@ -48,7 +47,10 @@ export const TodoState = ({ children }) => {
                   style: "destructive" ,
                onPress: async () => {
                 changeScreen(null)
-                await Http.delete(`https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos/${id}.json`)
+                await fetch(`https://mobile-todo-app-ac51f-default-rtdb.firebaseio.com/todos/${id}.json`, {
+                    method: 'DELETE',
+                    heders: {'Content-Type': 'application/json'}
+                })
                 
                 dispatch({ type: REMOVE_TODO, id})
              } }
@@ -70,6 +72,9 @@ export const TodoState = ({ children }) => {
 
             })
             const data = await response.json()
+            if (data === null) {
+                return <View><Text>hh</Text></View>
+            }
             const todos = Object.keys(data).map(key => ({...data[key], id: key}))
             dispatch({type: FETCH_TODOS, todos})
         } catch (e) {
